@@ -1,13 +1,13 @@
 "use client"
 
 import { Button } from "@/components/ui/button"
-import { PlusCircle, FileX, Inbox, FolderOpen } from "lucide-react";
+import { PlusCircle, FileX, Inbox, FolderOpen, Trash, PencilIcon } from "lucide-react";
 import { useState, useEffect } from "react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Badge } from "@/components/ui/badge"
-import { Plus, Edit, Trash2, Save, X } from "lucide-react"
+import { Plus, Edit, Trash2, Save, X, Star, Calendar, Pencil } from "lucide-react"
 import { error } from "console"
 
 interface BookProps {
@@ -21,26 +21,161 @@ interface BookProps {
 }
 
 export default function Home({ params }: BookProps) {
-    const movie_list = {}
-    if (Object.keys(movie_list).length === 0) {
+
+    const [books, setBooks] = useState([])
+    const [isLoading, setIsLoading] = useState(true)
+
+    useEffect(() => {
+
+        fetch("/api/books")
+            .then(res => res.json())
+            .then(data => {
+                setBooks(data)
+                setIsLoading(false)
+            })
+            .catch(error => {
+                console.error("Failed to fetch books", error)
+                setIsLoading(false)
+            })
+
+    }, [])
+
+    if (isLoading) {
+        return (
+            <div className="p-9 bg-gray-50 min-h-screen flex items-center justify-center">
+                <Card className="w-full max-w-8xl shadow-xl rounded-2xl p-8 bg-white">
+                    <div>
+                        <h1 className="font-bold tracking-tight text-3xl text-center text-gray-800">Your Book Collection</h1>
+                        <p className="text-slate-600 tracking-tight text-center mb-6">Discover, track, and enjoy your favorite book</p>
+                    </div>
+
+                    <Card className="p-8">
+                        <div className="flex justify-center items-center h-40">
+                            <h1 className="text-xl text-gray-500">Loading . . .</h1>
+                        </div>
+                    </Card>
+
+                    <div className="flex justify-center mt-6 gap-3">
+                        <Button
+                            className="w-32">
+                            Add Book
+                        </Button>
+                        <Button
+                            className="w-32"
+                            variant="destructive">
+                            Clear Session
+                        </Button>
+                    </div>
+                </Card>
+            </div>
+
+        )
+    }
+
+    if (books.length === 0) {
         return (
             <div className="p-6 bg-gray-50 min-h-screen flex items-center justify-center">
                 <Card className="w-full max-w-2xl shadow-xl rounded-2xl p-6 bg-white">
-                    <h1 className="font-bold tracking-tight text-3xl mb-6 text-center text-gray-800">Your Movie List</h1>
+                    <div>
+                        <h1 className="font-bold tracking-tight text-3xl text-center text-gray-800">Your Book Collection</h1>
+                        <p className="text-slate-600 tracking-tight text-center mb-6">Discover, track, and enjoy your favorite book</p>
+                    </div>
                     <Card className="h-64 flex flex-col items-center justify-center border border-dashed border-gray-300 rounded-xl text-center">
-                      <h2 className="text-lg text-gray-500 mb-4">The list is empty...</h2>
-                      <FolderOpen className="w-12 h-12 mb-4 text-gray-500" />
+                        <h2 className="text-lg text-gray-500 mb-4">Your list is empty...</h2>
+                        <FolderOpen className="w-12 h-12 mb-4 text-gray-500" />
                     </Card>
-                <Button className="w-32 mx-auto">Add a movie</Button>
+                    <div className="flex justify-center mt-6 gap-3">
+                        <Button
+                            className="w-32">
+                            Add Book
+                        </Button>
+                        <Button
+                            className="w-32"
+                            variant="destructive">
+                            Clear Session
+                        </Button>
+                    </div>
                 </Card>
             </div>
-        );
-        
+        )
     }
 
     return (
-        <div>
-            <h1>hi</h1>
+
+        <div className="p-9 bg-gray-50 min-h-screen flex items-center justify-center">
+            <Card className="w-full max-w-8xl shadow-xl rounded-2xl p-8 bg-white">
+                <div>
+                    <h1 className="font-bold tracking-tight text-3xl text-center text-gray-800">Your Book Collection</h1>
+                    <p className="text-slate-600 tracking-tight text-center mb-6">Discover, track, and enjoy your favorite book</p>
+                </div>
+
+                <Card className="p-8">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5 mb-2">
+                        {books.map((book: any) => (
+                            <Card key={book.id} className="p-6 rounded-xl shadow-md bg-gray-100">
+
+                                {/* Contents */}
+                                <div>
+                                    <h2 className="text-5xl text-lg font-bold text-black truncate max-w-full mb-2">{book.title}</h2>
+                                    <div>
+                                        <div className="flex flex-wrap items-center gap-2 mb-1">
+                                            <span className="bg-white text-black px-2 rounded-xl">
+                                                {book.isRead ? "Readed" : "To Read"}
+                                            </span>
+                                            <span className="bg-white text-gray-700 border px-2 py- rounded-xl">
+                                                {book.genre}
+                                            </span>
+                                            <span className="flex items-center gap-1">
+                                                <Calendar className="w-4 h-4 text-gray-500" />
+                                                {book.year || "N/A"}
+                                            </span>
+                                            <span className="flex items-center gap-1 bg-yellow-100 text-yellow-800 px-2 py-1 rounded-xl">
+                                                <Star className="w-4 h-4 fill-yellow-500" />
+                                                {book.rating ?? "N/A"}
+                                            </span>
+                                        </div>
+                                        <div className="flex flex-wrap items-center gap-2">
+                                            <Button size="sm" variant="outline" className="p-2">
+                                                <Edit className="w-4 h-4" />
+                                            </Button>
+                                            <Button size="sm" variant="destructive" className="p-2">
+                                                <Trash2 className="w-4 h-4" />
+                                            </Button>
+                                        </div>
+                                    </div>
+
+                                    {/* Description */}
+                                    <Card className="text-gray-500 mt-auto h-31 whitespace-normal p-5 break-words line-clamp-4 overflow-hidden mt-7">
+                                        {book.description}
+                                    </Card>
+                                </div>
+
+                                {/* Image */}
+                                <button>
+                                    <Card className="mt-auto h-100 bg-white flex items-center justify-center text-gray-400">
+                                        img
+                                    </Card>
+                                </button>
+
+                            </Card>
+                        ))}
+                    </div>
+                </Card>
+
+                <div className="flex justify-center mt-6 gap-3">
+                    <Button
+                        className="w-32">
+                        Add Book
+                    </Button>
+                    <Button
+                        className="w-32"
+                        variant="destructive">
+                        Clear Session
+                    </Button>
+                </div>
+            </Card>
         </div>
+
+
     )
 }
