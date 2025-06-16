@@ -30,6 +30,12 @@ export function closeDB() {
     }
 }
 
+export function deleteAllBooks() {
+    const db = getDB()
+    db.prepare("DELETE FROM books").run()
+    db.prepare("DELETE FROM sqlite_sequence WHERE name = 'books'").run()
+}
+
 export const booksDB = {
 
     // Create a new Note ----------------------------------- C

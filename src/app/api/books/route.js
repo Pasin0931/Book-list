@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server"
-import { booksDB } from "@/lib/db"
+import { booksDB, deleteAllBooks } from "@/lib/db"
 
 // GET
 export async function GET() {
@@ -29,5 +29,22 @@ export async function POST(request) {
     } catch (error) {
         console.error("Error creating book: ", error)
         return NextResponse.json({error: "Failed to create book"}, {status: 500})
+    }
+}
+
+// DELETE
+export async function DELETE() {
+    try {
+        const bookList = booksDB.getAllBooks()
+        if (bookList.length === 0) {
+            return NextResponse.json({ error: "Book list is already empty !" }, { status: 400 })
+        }
+
+        deleteAllBooks()
+        return NextResponse.json({ message: "All books have been deleted." }, { status: 200 })
+
+    } catch (error) {
+        console.error("Error clearing all books", error)
+        return NextResponse.json({error: "Failed to clear book list"}, {status: 500})
     }
 }
