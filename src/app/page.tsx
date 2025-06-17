@@ -9,6 +9,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { Badge } from "@/components/ui/badge"
 import { Plus, Edit, Trash2, Save, X, Star, Calendar, Pencil } from "lucide-react"
 import { error } from "console"
+import { motion } from "framer-motion"
 
 interface BookProps {
     params: {
@@ -26,7 +27,6 @@ export default function Home({ params }: BookProps) {
     const [isLoading, setIsLoading] = useState(true)
 
     useEffect(() => {
-
         fetch("/api/books")
             .then(res => res.json())
             .then(data => {
@@ -37,9 +37,9 @@ export default function Home({ params }: BookProps) {
                 console.error("Failed to fetch books", error)
                 setIsLoading(false)
             })
-
     }, [])
 
+    // Is Loading --------------------------------------------------------------------------------
     if (isLoading) {
         return (
             <div className="p-9 bg-gray-50 min-h-screen flex items-center justify-center">
@@ -56,54 +56,81 @@ export default function Home({ params }: BookProps) {
                     </Card>
 
                     <div className="flex justify-center mt-6 gap-3">
-                        <Button
-                            className="w-32">
-                            Add Book
-                        </Button>
-                        <Button
-                            className="w-32"
-                            variant="destructive">
-                            Clear Session
-                        </Button>
+                        <motion.div whileHover={{ scale: 1.05 }}>
+                            <Button
+                                className="w-32">
+                                Add Book
+                            </Button>
+                        </motion.div>
+                        <motion.div whileHover={{ scale: 1.05 }}>
+                            <Button
+                                className="w-32"
+                                variant="destructive">
+                                Clear Session
+                            </Button>
+                        </motion.div>
                     </div>
                 </Card>
             </div>
-
         )
     }
 
+    // No Book --------------------------------------------------------------------------------
     if (books.length === 0) {
         return (
-            <div className="p-6 bg-gray-50 min-h-screen flex items-center justify-center">
-                <Card className="w-full max-w-2xl shadow-xl rounded-2xl p-6 bg-white">
+            <motion.div
+                className="p-6 bg-gray-50 min-h-screen flex items-center justify-center"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0.6 }}>
+
+                <motion.div
+                    className="w-full max-w-2xl shadow-xl rounded-2xl p-6 bg-white"
+                    initial={{ y: 20, opacity: 0 }}
+                    animate={{ y: 0, opacity: 1 }}
+                    transition={{ delay: 0.2 }}>
+
                     <div>
                         <h1 className="font-bold tracking-tight text-3xl text-center text-gray-800">Your Book Collection</h1>
                         <p className="text-slate-600 tracking-tight text-center mb-6">Discover, track, and enjoy your favorite book</p>
                     </div>
-                    <Card className="h-64 flex flex-col items-center justify-center border border-dashed border-gray-300 rounded-xl text-center">
+
+                    <motion.div
+                        className="h-64 flex flex-col items-center justify-center border border-dashed border-gray-300 rounded-xl text-center"
+                        initial={{ scale: 0.95, opacity: 0 }}
+                        animate={{ scale: 1, opacity: 1 }}
+                        transition={{ delay: 0.4 }}>
                         <h2 className="text-lg text-gray-500 mb-4">Your list is empty...</h2>
                         <FolderOpen className="w-12 h-12 mb-4 text-gray-500" />
-                    </Card>
+                    </motion.div>
+
                     <div className="flex justify-center mt-6 gap-3">
-                        <Button
-                            className="w-32">
-                            Add Book
-                        </Button>
-                        <Button
-                            className="w-32"
-                            variant="destructive">
-                            Clear Session
-                        </Button>
+                        <motion.div whileHover={{ scale: 1.05 }}>
+                            <Button className="w-32">Add Book</Button>
+                        </motion.div>
+                        <motion.div whileHover={{ scale: 1.05 }}>
+                            <Button className="w-32" variant="destructive">Clear Session</Button>
+                        </motion.div>
                     </div>
-                </Card>
-            </div>
-        )
+                </motion.div>
+            </motion.div>
+        );
     }
 
+    // Have Book --------------------------------------------------------------------------------
     return (
+        <motion.div
+            className="p-9 bg-gray-50 min-h-screen flex items-center justify-center"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.6 }}>
 
-        <div className="p-9 bg-gray-50 min-h-screen flex items-center justify-center">
-            <Card className="w-full max-w-8xl shadow-xl rounded-2xl p-8 bg-white">
+            <motion.div
+                className="w-full max-w-8xl shadow-xl rounded-2xl p-8 bg-white"
+                initial={{ y: 30, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                transition={{ delay: 0.2 }}>
+
                 <div>
                     <h1 className="font-bold tracking-tight text-3xl text-center text-gray-800">Your Book Collection</h1>
                     <p className="text-slate-600 tracking-tight text-center mb-6">Discover, track, and enjoy your favorite book</p>
@@ -111,8 +138,14 @@ export default function Home({ params }: BookProps) {
 
                 <Card className="p-8">
                     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5 mb-2">
-                        {books.map((book: any) => (
-                            <Card key={book.id} className="p-6 rounded-xl shadow-md bg-gray-100">
+                        {books.map((book: any, index: number) => (
+                            <motion.div
+                                key={book.id}
+                                className="p-6 rounded-xl shadow-md bg-gray-100"
+                                initial={{ opacity: 0, y: 80 }}
+                                animate={{ opacity: 1, y: 1 }}
+                                transition={{ delay: index * 0.1 }}
+                                whileHover={{ scale: 1.01 }}>
 
                                 {/* Contents */}
                                 <div>
@@ -151,31 +184,32 @@ export default function Home({ params }: BookProps) {
                                 </div>
 
                                 {/* Image */}
-                                <button>
-                                    <Card className="mt-auto h-100 bg-white flex items-center justify-center text-gray-400">
-                                        img
-                                    </Card>
-                                </button>
+                                <Card className="mt-auto h-100 bg-white flex items-center justify-center text-gray-400 mt-3">
+                                    img
+                                </Card>
 
-                            </Card>
+                            </motion.div>
                         ))}
                     </div>
                 </Card>
 
                 <div className="flex justify-center mt-6 gap-3">
-                    <Button
-                        className="w-32">
-                        Add Book
-                    </Button>
-                    <Button
-                        className="w-32"
-                        variant="destructive">
-                        Clear Session
-                    </Button>
+                    <motion.div whileHover={{ scale: 1.05 }}>
+                        <Button
+                            className="w-32">
+                            Add Book
+                        </Button>
+                    </motion.div>
+                    <motion.div whileHover={{ scale: 1.05 }}>
+                        <Button
+                            className="w-32"
+                            variant="destructive">
+                            Clear Session
+                        </Button>
+                    </motion.div>
                 </div>
-            </Card>
-        </div>
 
-
-    )
+            </motion.div>
+        </motion.div>
+    );
 }
