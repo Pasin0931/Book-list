@@ -82,6 +82,7 @@ export default function ViewPage({ id }: editPageProps) {
         )
     }
 
+    // No Book -------------------------------------------------------------------------------------------
     if (!books) {
         alert("Failed to fetch data. . .")
         return (
@@ -118,63 +119,82 @@ export default function ViewPage({ id }: editPageProps) {
         )
     }
 
+    // Have Book --------------------------------------------------------------------------------------------
     return (
         <motion.div
-            className="pl-90 pr-90 bg-gray-50 min-h-screen flex items-center justify-center"
+            className="px-10 bg-gray-50 min-h-screen flex items-center justify-center pb-50"
             initial={{ y: 30, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ delay: 0.2 }}>
-            <div className="w-full max-w-8xl shadow-xl rounded-2xl p-8 bg-white">
-                <motion.div whileHover={{ scale: 1.01 }}>
-                    <Card>
 
-                        <span className="bg-white text-black px-2 rounded-xl">
-                            {books.title}
-                        </span>
+            <div className="w-full max-w-4xl shadow-xl rounded-2xl p-8 bg-white">
+                <motion.div whileHover={{ scale: 1.01 }}>
+                    <Card className="p-8">
 
                         <div>
-                            <div className="flex flex-wrap items-center gap-2 mb-3">
-                                <span className="bg-white text-black px-2 rounded-xl">
+                            <h1 className="text-4xl font-bold text-gray-800 mb-3">{books.title}</h1>
+                            <div className="flex flex-wrap items-center gap-3">
+                                <span className="bg-white text-black text-sm px-3 py-1 rounded-full border">
                                     {books.isRead ? "Readed" : "To Read"}
                                 </span>
-                                <span className="bg-white text-gray-700 border px-2 py- rounded-xl">
+                                <span className="bg-white text-gray-700 text-sm px-3 py-1 rounded-full border">
                                     {books.genre}
                                 </span>
-                                <span className="flex items-center gap-1">
+                                <span className="flex items-center gap-1 text-sm text-gray-600">
                                     <Calendar className="w-4 h-4 text-gray-500" />
                                     {books.year || "N/A"}
                                 </span>
-                                <span className="flex items-center gap-1 bg-yellow-100 text-yellow-800 px-2 py-1 rounded-xl">
+                                <span className="flex items-center gap-1 bg-yellow-100 text-yellow-800 text-sm px-3 py-1 rounded-full">
                                     <Star className="w-4 h-4 fill-yellow-500" />
                                     {books.rating ?? "N/A"}
                                 </span>
                             </div>
-                            <div className="flex flex-wrap items-center gap-2">
-                                <Link href={`/books/${books.id}`}>
-                                    <Button size="sm" variant="outline" className="p-2">
-                                        <Edit className="w-4 h-4" />
-                                    </Button>
-                                </Link>
-                                <Button size="sm" variant="destructive" className="p-2" onClick={() => alert("Do you want to remove this book ?")}>
-                                    <Trash2 className="w-4 h-4" />
-                                </Button>
-                            </div>
-                            <div>
-                                {/* Description */}
-                                <Card className="text-gray-500 mt-auto h-31 whitespace-normal p-5 break-words line-clamp-4 overflow-hidden mt-7">
-                                    {books.description}
-                                </Card>
-                            </div>
-
-                            {/* Image */}
-                            <Card className="mt-auto h-100 bg-white flex items-center justify-center text-gray-400 mt-3">
-                                img
-                            </Card>
-
                         </div>
+
+                        <div className="flex items-center gap-3">
+                            <Link href={`/books/${books.id}`}>
+                                <Button
+                                    size="lg"
+                                    variant="outline"
+                                    className="rounded-2xl">
+                                    <Edit className="w-4 h-4 mr-1" />
+                                    Edit
+                                </Button>
+                            </Link>
+                            <Button
+                                size="lg"
+                                variant="destructive"
+                                className="rounded-2xl"
+                                onClick={() => confirm("Do you want to remove this book?")}>
+                                <Trash2 className="w-4 h-4 mr-1" />
+                                Delete
+                            </Button>
+                        </div>
+
+                        <div>
+                            <p className="text-gray-600 whitespace-pre-line break-words line-clamp-5">
+                                {books.description}
+                            </p>
+                        </div>
+
+                        <Card className="h-200 bg-gray-100 flex items-center justify-center text-gray-400 rounded-xl">
+                            <span>Image Placeholder</span>
+                        </Card>
+
                     </Card>
                 </motion.div>
+
+                <div className="flex items-center justify-center mt-9">
+                    <Link href={`/`}>
+                        <Button className="rounded-2xl px-9">
+                            Back
+                        </Button>
+                    </Link>
+                </div>
+
+
             </div>
         </motion.div>
     )
+
 }

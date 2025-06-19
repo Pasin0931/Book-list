@@ -179,7 +179,7 @@ export default function Home({ params }: BookProps) {
                                                         <Edit className="w-4 h-4" />
                                                     </Button>
                                                 </Link>
-                                                <Button size="sm" variant="destructive" className="p-2" onClick={() => alert("Do you want to remove this book ?")}>
+                                                <Button size="sm" variant="destructive" className="p-2" onClick={() => confirm("Do you want to remove this book ?")}>
                                                     <Trash2 className="w-4 h-4" />
                                                 </Button>
                                             </div>
@@ -214,7 +214,8 @@ export default function Home({ params }: BookProps) {
                     <motion.div whileHover={{ scale: 1.05 }}>
                         <Button
                             className="w-32"
-                            variant="destructive">
+                            variant="destructive"
+                            onClick={() => confirm("Do you want to clear this session ?")}>
                             Clear Session
                         </Button>
                     </motion.div>
