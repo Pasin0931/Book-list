@@ -148,55 +148,56 @@ export default function Home({ params }: BookProps) {
                                 className="p-6 rounded-xl shadow-md bg-gray-100"
                                 initial={{ opacity: 0, y: 80 }}
                                 animate={{ opacity: 1, y: 1 }}
-                                transition={{ delay: index * 0.1 }}
+                                transition={{ delay: index * 0.005 }}
                                 whileHover={{ scale: 1.01 }}>
 
-                                <Link href={`/books/${book.id}/view/`}>
-
-                                    {/* Contents */}
+                                {/* Contents */}
+                                <div>
+                                    <h2 className="text-8xl text-lg font-bold text-black truncate max-w-full mb-2">{book.title}</h2>
                                     <div>
-                                        <h2 className="text-5xl text-lg font-bold text-black truncate max-w-full mb-2">{book.title}</h2>
-                                        <div>
-                                            <div className="flex flex-wrap items-center gap-2 mb-1">
-                                                <span className="bg-white text-black px-2 rounded-xl">
-                                                    {book.isRead ? "Readed" : "To Read"}
-                                                </span>
-                                                <span className="bg-white text-gray-700 border px-2 py- rounded-xl">
-                                                    {book.genre}
-                                                </span>
-                                                <span className="flex items-center gap-1">
-                                                    <Calendar className="w-4 h-4 text-gray-500" />
-                                                    {book.year || "N/A"}
-                                                </span>
-                                                <span className="flex items-center gap-1 bg-yellow-100 text-yellow-800 px-2 py-1 rounded-xl">
-                                                    <Star className="w-4 h-4 fill-yellow-500" />
-                                                    {book.rating ?? "N/A"}
-                                                </span>
-                                            </div>
-                                            <div className="flex flex-wrap items-center gap-2">
-                                                <Link href={`/books/${book.id}`}>
-                                                    <Button size="sm" variant="outline" className="p-2">
-                                                        <Edit className="w-4 h-4" />
-                                                    </Button>
-                                                </Link>
-                                                <Button size="sm" variant="destructive" className="p-2" onClick={() => confirm("Do you want to remove this book ?")}>
-                                                    <Trash2 className="w-4 h-4" />
-                                                </Button>
-                                            </div>
+                                        <div className="flex flex-wrap items-center gap-2 mb-1">
+                                            <span className="bg-white text-black px-2 rounded-xl">
+                                                {book.isRead ? "Readed" : "To Read"}
+                                            </span>
+                                            <span className="bg-white text-gray-700 border px-2 py- rounded-xl">
+                                                {book.genre}
+                                            </span>
+                                            <span className="flex items-center gap-1">
+                                                <Calendar className="w-4 h-4 text-gray-500" />
+                                                {book.year || "N/A"}
+                                            </span>
+                                            <span className="flex items-center gap-1 bg-yellow-100 text-yellow-800 px-2 py-1 rounded-xl">
+                                                <Star className="w-4 h-4 fill-yellow-500" />
+                                                {book.rating ?? "N/A"}
+                                            </span>
                                         </div>
-
-                                        {/* Description */}
-                                        <Card className="text-gray-500 mt-auto h-31 whitespace-normal p-5 break-words line-clamp-4 overflow-hidden mt-7">
-                                            {book.description}
-                                        </Card>
+                                        <div className="flex flex-wrap items-center gap-2">
+                                            <Link href={`/books/${book.id}`}>
+                                                <Button size="sm" variant="outline" className="p-2">
+                                                    <Edit className="w-4 h-4" />
+                                                </Button>
+                                            </Link>
+                                            <Button size="sm" variant="destructive" className="p-2" onClick={() => confirm("Do you want to remove this book ?")}>
+                                                <Trash2 className="w-4 h-4" />
+                                            </Button>
+                                            <Link href={`/books/${book.id}/view`}>
+                                                <Button size="sm" variant="outline">
+                                                    <h1>View Content</h1>
+                                                </Button>
+                                            </Link>
+                                        </div>
                                     </div>
 
-                                    {/* Image */}
-                                    <Card className="mt-auto h-100 bg-white flex items-center justify-center text-gray-400 mt-3">
-                                        img
+                                    {/* Description */}
+                                    <Card className="text-gray-500 mt-auto h-31 whitespace-normal p-5 break-words line-clamp-4 overflow-hidden mt-7">
+                                        {book.description}
                                     </Card>
+                                </div>
 
-                                </Link>
+                                {/* Image */}
+                                <Card className="mt-auto h-100 bg-white flex items-center justify-center text-gray-400 mt-3">
+                                    img
+                                </Card>
 
                             </motion.div>
                         ))}
