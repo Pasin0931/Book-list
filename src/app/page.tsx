@@ -29,7 +29,9 @@ export default function Home({ params }: BookProps) {
     const [books, setBooks] = useState([])
     const [isLoading, setIsLoading] = useState(true)
 
-    useEffect(() => {
+    const [isCreating, setIsCreating] = useState(false)
+
+    const fetchBooks = async () => {
         fetch("/api/books")
             .then(res => res.json())
             .then(data => {
@@ -40,6 +42,48 @@ export default function Home({ params }: BookProps) {
                 console.error("Failed to fetch books", error)
                 setIsLoading(false)
             })
+    }
+
+    const deleteBook = async (id: number) => {
+        try {
+
+            if (!confirm("Do you want to delete this book from collection ?")) {
+                return console.log("Canceled deleting book")
+            }
+
+            const response = await fetch(`/api/books/${id}`, { method: "DELETE" })
+            if (response.ok) {
+                fetchBooks()
+            }
+            alert("Book Deleted")
+
+        } catch (error) {
+            console.error("Error deleting books", error)
+        }
+    }
+    
+    const clearSession = async () => {
+        try {
+
+            if (!confirm("Do you want to clear this book session ?")) {
+                console.log("Canceled clearing book session")
+            }
+
+            const response = await fetch(`/api/books/`, { method: "DELETE" })
+            if (response.ok) {
+                fetchBooks()
+            }
+            alert("Session cleared")
+
+        } catch (error) {
+            console.error("Error clearing all books", error)
+        }
+    }
+
+    // ---------------------------------------------------------------------------------------------
+
+    useEffect(() => {
+        fetchBooks()
     }, [])
 
     // Is Loading --------------------------------------------------------------------------------
@@ -177,7 +221,7 @@ export default function Home({ params }: BookProps) {
                                                     <Edit className="w-4 h-4" />
                                                 </Button>
                                             </Link>
-                                            <Button size="sm" variant="destructive" className="p-2" onClick={() => confirm("Do you want to remove this book ?")}>
+                                            <Button size="sm" variant="destructive" className="p-2" onClick={() => deleteBook(book.id)}>
                                                 <Trash2 className="w-4 h-4" />
                                             </Button>
                                             <Link href={`/books/${book.id}/view`}>
@@ -216,7 +260,7 @@ export default function Home({ params }: BookProps) {
                         <Button
                             className="w-32"
                             variant="destructive"
-                            onClick={() => confirm("Do you want to clear this session ?")}>
+                            onClick={() => clearSession()}>
                             Clear Session
                         </Button>
                     </motion.div>

@@ -31,8 +31,7 @@ export default function ViewPage({ id }: editPageProps) {
     const [books, setBooks] = useState<BookProps | null>(null)
     const [isLoading, setIsLoading] = useState(true)
 
-    useEffect(() => {
-        console.log(id)
+    const fetchBooks = async () => {
         fetch(`/api/books/${id}`)
             .then(res => res.json())
             .then(data => {
@@ -43,6 +42,30 @@ export default function ViewPage({ id }: editPageProps) {
                 console.error("Failed to fetch books", error)
                 setIsLoading(false)
             })
+    }
+
+    const deleteBook = async (id: number) => {
+        try {
+
+            if (!confirm("Do you want to delete this book from collection ?")) {
+                return console.log("Canceled deleting book")
+            }
+
+            const response = await fetch(`/api/books/${id}`, { method: "DELETE" })
+            if (response.ok) {
+                fetchBooks()
+            }
+            alert("Book Deleted")
+
+        } catch (error) {
+            console.error("Error deleting books", error)
+        }
+    }
+
+    // -----------------------------------------------------------------------------------------------------
+
+    useEffect(() => {
+        fetchBooks()
     }, [id])
 
 
@@ -165,7 +188,10 @@ export default function ViewPage({ id }: editPageProps) {
                                 size="lg"
                                 variant="destructive"
                                 className="rounded-2xl"
-                                onClick={() => confirm("Do you want to remove this book?")}>
+                                onClick={async () => {
+                                    await deleteBook(books.id)
+                                    window.location.href = "/"
+                                }}>
                                 <Trash2 className="w-4 h-4 mr-1" />
                                 Delete
                             </Button>
