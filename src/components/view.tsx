@@ -44,11 +44,12 @@ export default function ViewPage({ id }: editPageProps) {
             })
     }
 
-    const deleteBook = async (id: number) => {
+    const deleteBook = async (id: number): Promise<boolean> => {
         try {
 
             if (!confirm("Do you want to delete this book from collection ?")) {
-                return console.log("Canceled deleting book")
+                console.log("Canceled deleting book")
+                return false
             }
 
             const response = await fetch(`/api/books/${id}`, { method: "DELETE" })
@@ -56,9 +57,11 @@ export default function ViewPage({ id }: editPageProps) {
                 fetchBooks()
             }
             alert("Book Deleted")
+            return true
 
         } catch (error) {
             console.error("Error deleting books", error)
+            return false
         }
     }
 
@@ -72,36 +75,41 @@ export default function ViewPage({ id }: editPageProps) {
     // Is Loading --------------------------------------------------------------------------------
     if (isLoading) {
         return (
-            <div className="p-9 bg-gray-50 min-h-screen flex items-center justify-center">
-                <Card className="w-full max-w-8xl shadow-xl rounded-2xl p-8 bg-white">
-                    <div>
-                        <h1 className="font-bold tracking-tight text-3xl text-center text-gray-800">Your Book Collection</h1>
-                        <p className="text-slate-600 tracking-tight text-center mb-6">Discover, track, and enjoy your favorite book</p>
-                    </div>
+            //     <div className="p-9 bg-gray-50 min-h-screen flex items-center justify-center">
+            //         <Card className="w-full max-w-8xl shadow-xl rounded-2xl p-8 bg-white">
+            //             <div>
+            //                 <h1 className="font-bold tracking-tight text-3xl text-center text-gray-800">Your Book Collection</h1>
+            //                 <p className="text-slate-600 tracking-tight text-center mb-6">Discover, track, and enjoy your favorite book</p>
+            //             </div>
 
-                    <Card className="p-8">
-                        <div className="flex justify-center items-center h-40">
-                            <h1 className="text-xl text-gray-500">Loading . . .</h1>
-                        </div>
-                    </Card>
+            //             <Card className="p-8">
+            //                 <div className="flex justify-center items-center h-40">
+            //                     <h1 className="text-xl text-gray-500">Loading . . .</h1>
+            //                 </div>
+            //             </Card>
 
-                    <div className="flex justify-center mt-6 gap-3">
-                        <motion.div whileHover={{ scale: 1.05 }}>
-                            <Button
-                                className="w-32">
-                                Add Book
-                            </Button>
-                        </motion.div>
-                        <motion.div whileHover={{ scale: 1.05 }}>
-                            <Button
-                                className="w-32"
-                                variant="destructive">
-                                Clear Session
-                            </Button>
-                        </motion.div>
-                    </div>
-                </Card>
+            //             <div className="flex justify-center mt-6 gap-3">
+            //                 <motion.div whileHover={{ scale: 1.05 }}>
+            //                     <Button
+            //                         className="w-32">
+            //                         Add Book
+            //                     </Button>
+            //                 </motion.div>
+            //                 <motion.div whileHover={{ scale: 1.05 }}>
+            //                     <Button
+            //                         className="w-32"
+            //                         variant="destructive">
+            //                         Clear Session
+            //                     </Button>
+            //                 </motion.div>
+            //             </div>
+            //         </Card>
+            //     </div>
+
+            <div className="bg-white text-white">
+                <h1>Loading. . . .</h1>
             </div>
+
         )
     }
 
@@ -189,8 +197,10 @@ export default function ViewPage({ id }: editPageProps) {
                                 variant="destructive"
                                 className="rounded-2xl"
                                 onClick={async () => {
-                                    await deleteBook(books.id)
-                                    window.location.href = "/"
+                                    const deleted = await deleteBook(books.id)
+                                    if (deleted) {
+                                        window.location.href = "/"
+                                    }
                                 }}>
                                 <Trash2 className="w-4 h-4 mr-1" />
                                 Delete

@@ -61,12 +61,16 @@ export default function Home({ params }: BookProps) {
             console.error("Error deleting books", error)
         }
     }
-    
+
     const clearSession = async () => {
         try {
 
+            if (books.length === 0) {
+                return alert("Your collection is already empty")
+            }
+
             if (!confirm("Do you want to clear this book session ?")) {
-                console.log("Canceled clearing book session")
+                return console.log("Canceled clearing book session")
             }
 
             const response = await fetch(`/api/books/`, { method: "DELETE" })
@@ -156,7 +160,7 @@ export default function Home({ params }: BookProps) {
                             <Button className="w-32">Add Book</Button>
                         </motion.div>
                         <motion.div whileHover={{ scale: 1.05 }}>
-                            <Button className="w-32" variant="destructive">Clear Session</Button>
+                            <Button className="w-32" variant="destructive" onClick={() => clearSession()}>Clear Session</Button>
                         </motion.div>
                     </div>
                 </motion.div>
@@ -186,7 +190,7 @@ export default function Home({ params }: BookProps) {
                 <Card className="p-8">
                     <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 2xl:grid-cols-4 gap-5 mb-2">
 
-                        {books.map((book: any, index: number) => ( //------------------------------------------ Book
+                        {books.map((book: any, index: number) => ( //-------------------------------------------------------------------------------------- Book
                             <motion.div
                                 key={book.id}
                                 className="p-6 rounded-xl shadow-md bg-gray-100"
@@ -197,7 +201,7 @@ export default function Home({ params }: BookProps) {
 
                                 {/* Contents */}
                                 <div>
-                                    <h2 className="text-8xl text-lg font-bold text-black truncate max-w-full mb-2">{book.title}</h2>
+                                    <h2 className="text-2xl font-bold text-black truncate max-w-full mb-3">{book.title}</h2>
                                     <div>
                                         <div className="flex flex-wrap items-center gap-2 mb-1">
                                             <span className="bg-white text-black px-2 rounded-xl">
@@ -250,12 +254,15 @@ export default function Home({ params }: BookProps) {
                 </Card>
 
                 <div className="flex justify-center mt-6 gap-3">
-                    <motion.div whileHover={{ scale: 1.05 }}>
-                        <Button
-                            className="w-32">
-                            Add Book
-                        </Button>
-                    </motion.div>
+
+                    <Link href={'/create'}>
+                        <motion.div whileHover={{ scale: 1.05 }}>
+                            <Button
+                                className="w-32">
+                                Add Book
+                            </Button>
+                        </motion.div>
+                    </Link>
                     <motion.div whileHover={{ scale: 1.05 }}>
                         <Button
                             className="w-32"
@@ -264,6 +271,7 @@ export default function Home({ params }: BookProps) {
                             Clear Session
                         </Button>
                     </motion.div>
+
                 </div>
 
             </motion.div>
