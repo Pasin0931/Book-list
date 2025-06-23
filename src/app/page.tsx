@@ -92,7 +92,7 @@ export default function Home({ params }: BookProps) {
     if (isLoading) {
         return (
             <div className="p-9 bg-gray-50 min-h-screen flex items-center justify-center">
-                <Card className="w-full max-w-8xl shadow-xl rounded-2xl p-8 bg-white">
+                <Card className="w-full max-w-2xl shadow-xl rounded-2xl p-8 bg-white">
                     <div>
                         <h1 className="font-bold tracking-tight text-3xl text-center text-gray-800">Your Book Collection</h1>
                         <p className="text-slate-600 tracking-tight text-center mb-6">Discover, track, and enjoy your favorite book</p>
@@ -154,11 +154,21 @@ export default function Home({ params }: BookProps) {
                     </motion.div>
 
                     <div className="flex justify-center mt-6 gap-3">
+                        <Link href={'/create'}>
+                            <motion.div whileHover={{ scale: 1.05 }}>
+                                <Button
+                                    className="w-32">
+                                    Add Book
+                                </Button>
+                            </motion.div>
+                        </Link>
                         <motion.div whileHover={{ scale: 1.05 }}>
-                            <Button className="w-32">Add Book</Button>
-                        </motion.div>
-                        <motion.div whileHover={{ scale: 1.05 }}>
-                            <Button className="w-32" variant="destructive" onClick={() => clearSession()}>Clear Session</Button>
+                            <Button
+                                className="w-32"
+                                variant="destructive"
+                                onClick={() => clearSession()}>
+                                Clear Session
+                            </Button>
                         </motion.div>
                     </div>
                 </motion.div>
@@ -201,7 +211,7 @@ export default function Home({ params }: BookProps) {
                                 <div>
                                     <h2 className="text-2xl font-bold text-black truncate max-w-full mb-3">{book.title}</h2>
                                     <div>
-                                        <div className="flex flex-wrap items-center gap-2 mb-1">
+                                        <div className="flex flex-wrap items-center gap-2 mb-2">
                                             <span className={`px-2 rounded-xl ${book.isRead ? "bg-black text-white" : "bg-white text-black"}`}>
                                                 {book.isRead ? "Readed" : "To Read"}
                                             </span>
@@ -235,7 +245,7 @@ export default function Home({ params }: BookProps) {
                                     </div>
 
                                     {/* Description */}
-                                    <Card className="text-gray-500 mt-auto h-31 whitespace-normal p-5 break-words line-clamp-4 overflow-hidden mt-7">
+                                    <Card className="text-gray-500 mt-auto h-27 whitespace-normal pl-4 py-2 break-words line-clamp-4 overflow-hidden mt-6">
                                         {book.description}
                                     </Card>
                                 </div>

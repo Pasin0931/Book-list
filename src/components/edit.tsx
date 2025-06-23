@@ -150,7 +150,7 @@ export default function EditPage({ id }: editPageProps) {
         <div className="flex flex-col md:flex-row gap-6">
 
           <div className="w-full md:w-2/4 space-y-4">
-            <h1 className="text-3xl font-bold text-gray-800">New Book</h1>
+            <h1 className="text-3xl font-bold text-gray-800">Editing "{books.title}"</h1>
 
             <div className="space-y-3">
               <Input
