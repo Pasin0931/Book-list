@@ -29,8 +29,6 @@ export default function Home({ params }: BookProps) {
     const [books, setBooks] = useState([])
     const [isLoading, setIsLoading] = useState(true)
 
-    const [isCreating, setIsCreating] = useState(false)
-
     const fetchBooks = async () => {
         fetch("/api/books")
             .then(res => res.json())
@@ -204,7 +202,7 @@ export default function Home({ params }: BookProps) {
                                     <h2 className="text-2xl font-bold text-black truncate max-w-full mb-3">{book.title}</h2>
                                     <div>
                                         <div className="flex flex-wrap items-center gap-2 mb-1">
-                                            <span className="bg-white text-black px-2 rounded-xl">
+                                            <span className={`px-2 rounded-xl ${book.isRead ? "bg-black text-white" : "bg-white text-black"}`}>
                                                 {book.isRead ? "Readed" : "To Read"}
                                             </span>
                                             <span className="bg-white text-gray-700 border px-2 py- rounded-xl">
@@ -254,7 +252,6 @@ export default function Home({ params }: BookProps) {
                 </Card>
 
                 <div className="flex justify-center mt-6 gap-3">
-
                     <Link href={'/create'}>
                         <motion.div whileHover={{ scale: 1.05 }}>
                             <Button
@@ -271,7 +268,6 @@ export default function Home({ params }: BookProps) {
                             Clear Session
                         </Button>
                     </motion.div>
-
                 </div>
 
             </motion.div>
