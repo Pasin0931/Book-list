@@ -1,15 +1,11 @@
 "use client"
 
 import { Button } from "@/components/ui/button"
-import { PlusCircle, FileX, Inbox, FolderOpen, Trash, PencilIcon } from "lucide-react";
+import { FolderOpen } from "lucide-react";
 import { useState, useEffect } from "react"
 import Link from "next/link"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Textarea } from "@/components/ui/textarea"
-import { Badge } from "@/components/ui/badge"
-import { Plus, Edit, Trash2, Save, X, Star, Calendar, Pencil } from "lucide-react"
-import { error } from "console"
+import { Card } from "@/components/ui/card"
+import { Edit, Trash2, Star, Calendar } from "lucide-react"
 import { motion } from "framer-motion"
 
 interface BookProps {
@@ -21,6 +17,7 @@ interface BookProps {
         isRead: boolean
         year: number
         rating: number
+        image: string
     }
 }
 
@@ -28,6 +25,8 @@ export default function Home({ params }: BookProps) {
 
     const [books, setBooks] = useState([])
     const [isLoading, setIsLoading] = useState(true)
+
+    const [imgError, setImgError] = useState(false)
 
     const fetchBooks = async () => {
         fetch("/api/books")
@@ -218,6 +217,8 @@ export default function Home({ params }: BookProps) {
                                             <span className="bg-white text-gray-700 border px-2 py- rounded-xl">
                                                 {book.genre}
                                             </span>
+                                        </div>
+                                        <div className="flex flex-wrap items-center gap-2 mb-2">
                                             <span className="flex items-center gap-1">
                                                 <Calendar className="w-4 h-4 text-gray-500" />
                                                 {book.year || "N/A"}
@@ -251,8 +252,18 @@ export default function Home({ params }: BookProps) {
                                 </div>
 
                                 {/* Image */}
-                                <Card className="mt-auto h-100 bg-white flex items-center justify-center text-gray-400 mt-3">
-                                    img
+                                <Card className="mt-auto h-120 bg-white flex items-center justify-center text-gray-400 mt-3">
+                                    {imgError || !book.image ? (
+                                        <span>N/A</span>
+                                    ) : (
+                                        <img
+                                            src={book.image}
+                                            alt="Book cover"
+                                            className="object-cover h-full rounded-xl"
+                                            onError={() => setImgError(true)}
+                                            onLoad={() => setImgError(false)}
+                                        />
+                                    )}
                                 </Card>
 
                             </motion.div>

@@ -1,15 +1,10 @@
 "use client"
 
 import { Button } from "@/components/ui/button"
-import { PlusCircle, FileX, Inbox, FolderOpen, Trash, PencilIcon, Car } from "lucide-react";
 import { useState, useEffect } from "react"
 import Link from "next/link"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Textarea } from "@/components/ui/textarea"
-import { Badge } from "@/components/ui/badge"
-import { Plus, Edit, Trash2, Save, X, Star, Calendar, Pencil } from "lucide-react"
-import { error } from "console"
+import { Card } from "@/components/ui/card"
+import { Edit, Trash2, Star, Calendar } from "lucide-react"
 import { motion } from "framer-motion"
 
 interface BookProps {
@@ -20,6 +15,7 @@ interface BookProps {
     isRead: boolean
     year: number
     rating: number
+    image: string
 }
 
 interface editPageProps {
@@ -30,6 +26,8 @@ export default function ViewPage({ id }: editPageProps) {
 
     const [books, setBooks] = useState<BookProps | null>(null)
     const [isLoading, setIsLoading] = useState(true)
+
+    const [imgError, setImgError] = useState(false)
 
     const fetchBooks = async () => {
         fetch(`/api/books/${id}`)
@@ -75,7 +73,7 @@ export default function ViewPage({ id }: editPageProps) {
     // Is Loading --------------------------------------------------------------------------------
     if (isLoading) {
         return (
-            
+
             <div className="bg-white text-white">
                 <h1>Loading. . . .</h1>
             </div>
@@ -135,7 +133,7 @@ export default function ViewPage({ id }: editPageProps) {
                         <div>
                             <h1 className="text-4xl font-bold text-gray-800 mb-3">{books.title}</h1>
                             <div className="flex flex-wrap items-center gap-3">
-                                <span className="bg-white text-black text-sm px-3 py-1 rounded-full border">
+                                <span className={`px-2 rounded-xl rounded-full border ${books.isRead ? "bg-black text-white" : "bg-white text-black"}`}>
                                     {books.isRead ? "Readed" : "To Read"}
                                 </span>
                                 <span className="bg-white text-gray-700 text-sm px-3 py-1 rounded-full border">
@@ -183,8 +181,18 @@ export default function ViewPage({ id }: editPageProps) {
                             </p>
                         </div>
 
-                        <Card className="h-200 bg-gray-100 flex items-center justify-center text-gray-400 rounded-xl">
-                            <span>Image Placeholder</span>
+                        <Card className="h-160 bg-gray-100 flex items-center justify-center text-gray-400 rounded-xl">
+                            {imgError || !books.image ? (
+                                <span>N/A</span>
+                            ) : (
+                                <img
+                                    src={books.image}
+                                    alt="Book cover"
+                                    className="object-cover h-full rounded-xl"
+                                    onError={() => setImgError(true)}
+                                    onLoad={() => setImgError(false)}
+                                />
+                            )}
                         </Card>
 
                     </Card>

@@ -24,13 +24,13 @@ export async function GET(request, { params }) {
 export async function PUT(request, { params }) {
     try {
         const { id } = params
-        const { title, description, genre, isRead } = await request.json()
+        const { title, description, genre, isRead, year, rating, image } = await request.json()
 
         if (!title || title.trim() == "") {
             return NextResponse.json({ error: "Title is required" }, { staus: 400 })
         }
 
-        const result = await booksDB.updateBook(Number.parseInt(id), title.trim(), description || "", genre || "", isRead)
+        const result = await booksDB.updateBook(Number.parseInt(id), title.trim(), description || "", genre || "", isRead, Number.parseInt(year), rating, image || "")
 
         if (result.changes > 0) {
             const updateBook = booksDB.getBookById(Number.parseInt(id))

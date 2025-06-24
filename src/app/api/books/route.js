@@ -15,11 +15,11 @@ export async function GET() {
 // POST
 export async function POST(request) {
     try {
-        const { title, description, genre, isRead } = await request.json()
+        const { title, description, genre, isRead, year, rating, image } = await request.json()
         if (!title.trim() || !description.trim() || !genre.trim() || isRead === null) {
-            return NextResponse.json({error: "All elements are required"}, {status: 404})
+            return NextResponse.json({error: "Title, Description, Genre, IsRead are required"}, {status: 404})
         }
-        const res = booksDB.createBook( title, description, genre, isRead )
+        const res = booksDB.createBook( title, description, genre, isRead, year, rating, image )
         if (res.changes > 0) {
             const newBook = booksDB.getBookById(res.lastInsertRowid)
             return NextResponse.json(newBook, {status: 201})

@@ -15,10 +15,28 @@ export function getDB() {
                 title TEXT NOT NULL,
                 description TEXT,
                 genre TEXT,
-                isRead BOOLEAN DEFAULT 0
+                isRead BOOLEAN DEFAULT 0,
+                year INTEGER,
+                rating REAL,
+                image TEXT
             )
         `)
         console.log("Data base initialized successful")
+        // try {
+        //     db.exec(`ALTER TABLE books ADD COLUMN year INTEGER`)
+        // } catch (error) {
+        //     console.log("Error", error)
+        // }
+        // try {
+        //     db.exec(`ALTER TABLE books ADD COLUMN rating REAL`)
+        // } catch (error) {
+        //     console.log("Error", error)
+        // }
+        // try {
+        //     db.exec(`ALTER TABLE books ADD COLUMN image TEXT`)
+        // } catch (error) {
+        //     console.log("Error", error)
+        // }
     }
     return db
 }
@@ -39,24 +57,24 @@ export function deleteAllBooks() {
 export const booksDB = {
 
     // Create a new Note ----------------------------------- C
-    createBook(title, description = "", genre = "", isRead = false) {
+    createBook(title, description = "", genre = "", isRead = false, year = null, rating = null, image = "") {
         const db = getDB()
-        const stmt = db.prepare(`INSERT INTO books (title, description, genre, isRead)
-            VALUES(?, ?, ?, ?)`)
+        const stmt = db.prepare(`INSERT INTO books (title, description, genre, isRead, year, rating, image)
+            VALUES(?, ?, ?, ?, ?, ?, ?)`)
 
-        return stmt.run(title, description, genre, isRead ? 1 : 0)
+        return stmt.run(title, description, genre, isRead ? 1 : 0, year, rating, image)
     },
 
 
     // Update a note ---------------------------------------- U
-    updateBook(id, title, description, genre, isRead) {
+    updateBook(id, title, description, genre, isRead, year, rating, image) {
         const db = getDB()
         const stmt = db.prepare(`
             UPDATE books 
-            SET title = ?, description = ?, genre = ?, isRead = ? 
+            SET title = ?, description = ?, genre = ?, isRead = ?, year = ?, rating = ?, image = ?
             WHERE id = ?
         `)
-        return stmt.run(title, description, genre, isRead ? 1 : 0, id)
+        return stmt.run(title, description, genre, isRead ? 1 : 0, year, rating, image, id)
     },
 
     // Read a note ------------------------------------------- R

@@ -1,15 +1,10 @@
 "use client"
 
 import { Button } from "@/components/ui/button"
-import { PlusCircle, FileX, Inbox, FolderOpen, Trash, PencilIcon, Car } from "lucide-react";
 import { useState, useEffect } from "react"
-import Link from "next/link"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Card } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
-import { Badge } from "@/components/ui/badge"
-import { Plus, Edit, Trash2, Save, X, Star, Calendar, Pencil } from "lucide-react"
-import { error } from "console"
 import { motion } from "framer-motion"
 
 interface BookProps {
@@ -20,6 +15,7 @@ interface BookProps {
   isRead: boolean
   rating: number
   year: number
+  image: string
 }
 
 interface editPageProps {
@@ -27,6 +23,8 @@ interface editPageProps {
 }
 
 export default function EditPage({ id }: editPageProps) {
+
+  const currentYear = new Date().getFullYear()
 
   const [books, setBooks] = useState<BookProps | null>(null)
   const [isLoading, setIsLoading] = useState(true)
@@ -37,17 +35,20 @@ export default function EditPage({ id }: editPageProps) {
   const [year, setYear] = useState<number | undefined>(books?.year)
   const [rating, setRating] = useState<number | undefined>(books?.rating)
   const [isRead, setIsRead] = useState(false)
+  const [image, setImage] = useState(books?.image)
   const [loading, setLoading] = useState(false)
+
+  const [imgError, setImgError] = useState(false)
 
   const handleSubmit = async () => {
 
     if (!title || !description || !genre) {
-      return alert("Please fill in all required fields.")
+      return alert("Please fill in { title, description, genre } fields.")
     }
 
     setLoading(true)
 
-    const newBook = { title, description, genre, year, rating, isRead }
+    const newBook = { title, description, genre, year, rating, isRead, image }
 
     try {
       const response = await fetch(`/api/books/${id}`, {
@@ -82,6 +83,7 @@ export default function EditPage({ id }: editPageProps) {
         setGenre(data.genre)
         setYear(data.year)
         setRating(data.rating)
+        setImage(data.image)
         setIsRead(data.isRead)
         setIsLoading(false)
       })
@@ -91,6 +93,11 @@ export default function EditPage({ id }: editPageProps) {
       })
   }, [id])
 
+  useEffect(() => {
+    if (image) {
+      setImgError(false)
+    }
+  }, [image])
 
   // Is Loading --------------------------------------------------------------------------------
   if (isLoading) {
@@ -173,13 +180,48 @@ export default function EditPage({ id }: editPageProps) {
                 type="number"
                 placeholder="Year"
                 value={year ?? ""}
-                onChange={(e) => setYear(parseInt(e.target.value))}
+                onChange={(e) => {
+
+                  if (e.target.value === "") {
+                    return setYear(undefined)
+                  }
+
+                  const thisYear = parseInt(e.target.value, 10)
+
+                  if (thisYear <= currentYear && thisYear >= 1450) {
+                    setYear(thisYear)
+                  } else if (thisYear < 1450) {
+                    setYear(1450)
+                  } else if (thisYear > currentYear) {
+                    setYear(currentYear)
+                  }
+                }}
+                min={1450}
+                max={currentYear}
+                step={1}
               />
               <Input
                 type="number"
                 placeholder="Rating"
                 value={rating ?? ""}
-                onChange={(e) => setRating(parseFloat(e.target.value))}
+                onChange={(e) => {
+                  const thisRating = parseFloat(e.target.value)
+                  if (thisRating <= 10 && thisRating >= 0) {
+                    setRating(thisRating)
+                  } else if (thisRating > 10) {
+                    setRating(10)
+                  } else if (thisRating < 0) {
+                    setRating(0)
+                  }
+                }}
+                min={0}
+                max={10}
+                step={0.1}
+              />
+              <Input
+                placeholder="Image URL"
+                value={image ?? ""}
+                onChange={(e) => { setImage(e.target.value) }}
               />
               <label className="flex items-center space-x-2 text-sm ml-3 pt-1">
                 <input
@@ -190,6 +232,7 @@ export default function EditPage({ id }: editPageProps) {
                 <span>Mark as Read</span>
               </label>
             </div>
+
 
             <div className="mt-5 flex justify-center gap-4">
               <motion.div whileHover={{ scale: 1.05 }}>
@@ -215,7 +258,17 @@ export default function EditPage({ id }: editPageProps) {
 
           <div className="w-full md:w-2/4">
             <Card className="h-160 bg-gray-100 flex items-center justify-center text-gray-400 rounded-xl">
-              <span>Image Placeholder</span>
+              {imgError || !image ? (
+                <span>N/A</span>
+              ) : (
+                <img
+                  src={image}
+                  alt="Book cover"
+                  className="object-cover h-full rounded-xl"
+                  onError={() => setImgError(true)}
+                  onLoad={() => setImgError(false)}
+                />
+              )}
             </Card>
           </div>
 
